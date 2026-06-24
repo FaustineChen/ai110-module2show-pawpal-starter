@@ -1,0 +1,85 @@
+classDiagram
+    class Owner {
+        +str owner_id
+        +str name
+        +List~Pet~ pets
+        +dict preferences
+        +add_pet(pet)
+        +get_all_tasks()
+        +get_preference(key, default=None)
+    }
+
+    class Pet {
+        +str pet_id
+        +str owner_id
+        +str name
+        +str species
+        +List~Task~ tasks
+        +add_task(task)
+        +get_pending_tasks(date)
+    }
+
+    class Task {
+        +str task_id
+        +str pet_id
+        +TaskType type
+        +TaskStatus status
+        +time start_time
+        +time end_time
+        +int priority
+        +RecurrenceFreq recurrence_freq
+        +List~int~ recurrence_days
+        +is_due_on(date)
+        +overlaps_with(other)
+    }
+
+    class Scheduler {
+        +sort_by_priority(tasks)
+        +detect_conflicts(tasks)
+        +generate_daily_plan(owner, date)
+    }
+
+    class DailyPlan {
+        +date date
+        +List~Task~ scheduled_tasks
+        +List~Task~ skipped_tasks
+        +List~str~ reasoning_log
+        +summary()
+    }
+
+    class TaskType <<enumeration>> {
+        +WALK
+        +FEEDING
+        +MEDS
+        +ENRICHMENT
+        +GROOMING
+        +APPOINTMENT
+    }
+
+    class TaskStatus <<enumeration>> {
+        +PENDING
+        +IN_PROGRESS
+        +DONE
+        +CANCELED
+    }
+
+    class RecurrenceFreq <<enumeration>> {
+        +ONCE
+        +DAILY
+        +WEEKLY
+    }
+
+    class PreferenceKey <<enumeration>> {
+        +NO_MEDS_BEFORE
+        +MAX_WALK_HOURS_PER_DAY
+    }
+
+    Owner "1" -- "*" Pet
+    Pet "1" -- "*" Task
+    Scheduler ..> Owner
+    Scheduler ..> Task
+    Scheduler --> DailyPlan
+    Task ..> TaskType
+    Task ..> TaskStatus
+    Task ..> RecurrenceFreq
+    Owner ..> PreferenceKey
