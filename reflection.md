@@ -145,7 +145,11 @@
 **b. Design changes**
 
 - Did your design change during implementation?
+    - Yes. Originally, generate_daily_plan only operated at the Owner level — it aggregated and scheduled tasks across all pets belonging to an owner
+    - During implementation, this was changed to support generating a plan for a specific pet as well.
 - If yes, describe at least one change and why you made it.
+    - In practice, an owner with multiple pets often wants to check just one pet's schedule rather than always seeing every pet's tasks combined.
+    - How it was implemented: adding an optional pet_id parameter
 
 ---
 
