@@ -27,7 +27,19 @@ pet2 = Pet(
     tasks=[]
 )
 
-# --- Tasks for Max (dog) ---
+# --- Tasks for Max (dog) --- added OUT OF ORDER (18:00, 07:00, 12:00) ---
+pet1.add_task(Task(
+    task_id="t3",
+    pet_id="p1",
+    type=TaskType.MEDS,
+    description="Evening heartworm pill",
+    status=TaskStatus.PENDING,
+    start_time=time(18, 0),
+    end_time=time(18, 5),
+    priority=5,
+    recurrence_freq=RecurrenceFreq.DAILY,
+))
+
 pet1.add_task(Task(
     task_id="t1",
     pet_id="p1",
@@ -52,31 +64,7 @@ pet1.add_task(Task(
     recurrence_freq=RecurrenceFreq.DAILY,
 ))
 
-pet1.add_task(Task(
-    task_id="t3",
-    pet_id="p1",
-    type=TaskType.MEDS,
-    description="Evening heartworm pill",
-    status=TaskStatus.PENDING,
-    start_time=time(18, 0),
-    end_time=time(18, 5),
-    priority=5,
-    recurrence_freq=RecurrenceFreq.DAILY,
-))
-
-# --- Tasks for Coco (cat) ---
-pet2.add_task(Task(
-    task_id="t4",
-    pet_id="p2",
-    type=TaskType.FEEDING,
-    description="Morning feeding",
-    status=TaskStatus.PENDING,
-    start_time=time(8, 0),
-    end_time=time(8, 10),
-    priority=3,
-    recurrence_freq=RecurrenceFreq.DAILY,
-))
-
+# --- Tasks for Coco (cat) --- added OUT OF ORDER (14:00, 06:30, 08:00) ---
 pet2.add_task(Task(
     task_id="t5",
     pet_id="p2",
@@ -102,17 +90,38 @@ pet2.add_task(Task(
     recurrence_freq=RecurrenceFreq.DAILY,
 ))
 
+pet2.add_task(Task(
+    task_id="t4",
+    pet_id="p2",
+    type=TaskType.FEEDING,
+    description="Morning feeding",
+    status=TaskStatus.PENDING,
+    start_time=time(8, 0),
+    end_time=time(8, 10),
+    priority=3,
+    recurrence_freq=RecurrenceFreq.DAILY,
+))
+
 owner1.add_pet(pet1)
 owner1.add_pet(pet2)
 
 scheduler = Scheduler()
 today = date(2026, 6, 25)
 
-print("=== All pets ===")
 plan_all = scheduler.generate_daily_plan(owner1, today)
+plan_max = scheduler.generate_daily_plan(owner1, today, pet=pet1)
+
+print("=== All pets | sorted by TIME ===")
 print(plan_all.summary())
 
 print()
-print("=== Max only ===")
-plan_max = scheduler.generate_daily_plan(owner1, today, pet=pet1)
+print("=== All pets | sorted by PRIORITY ===")
+print(plan_all.summary(sort_by_priority=True))
+
+print()
+print("=== Max only | sorted by TIME ===")
 print(plan_max.summary())
+
+print()
+print("=== Max only | sorted by PRIORITY ===")
+print(plan_max.summary(sort_by_priority=True))

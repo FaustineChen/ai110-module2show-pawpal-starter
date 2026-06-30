@@ -145,12 +145,22 @@
 **b. Design changes**
 
 - Did your design change during implementation?
-    - Yes. Originally, generate_daily_plan only operated at the Owner level — it aggregated and scheduled tasks across all pets belonging to an owner
-    - During implementation, this was changed to support generating a plan for a specific pet as well.
 - If yes, describe at least one change and why you made it.
-    - In practice, an owner with multiple pets often wants to check just one pet's schedule rather than always seeing every pet's tasks combined.
-    - How it was implemented: adding an optional pet_id parameter
 
+Yes, the design changed in several ways during implementation:
+
+1. Pet-level filtering in `generate_daily_plan`
+   - Originally, `generate_daily_plan` only operated at the Owner level — it aggregated and scheduled tasks across all pets belonging to an owner.
+   - This was changed to support generating a plan for a specific pet by adding an optional pet_id parameter. In practice, an owner with multiple pets often wants to check just one pet's schedule rather than always seeing every pet's tasks combined.'
+   - This filtering was added without breaking the original all-pets behavior (omitting pet_id still returns the combined plan).
+2. Scheduled date for one-time tasks
+   - A `scheduled_date` field was added to support one-time (`RecurrenceFreq.ONCE`) tasks.
+   - Originally, `Task.is_due_on()` only handled recurring patterns (daily/weekly); there was no way for a one-time task to specify which date it actually falls on.
+   - Adding scheduled_date lets the owner pick a specific calendar date for one-off tasks (e.g., a one-time vet appointment), and `is_due_on()` checks this field directly when recurrence_freq == ONCE.
+3. Status filtering on `DailyPlan`
+   - `DailyPlan` was extended with additional fields — `filter_pet_id`, `done_tasks`, and `canceled_tasks` — so the UI can let the user filter which task statuses are displayed.
+   - Originally `DailyPlan` only tracked `scheduled_tasks` and `skipped_tasks`.
+   - Separating them gives the UI clearer control over what to display and avoids overloading skipped_tasks with multiple meanings.
 ---
 
 ## 2. Scheduling Logic and Tradeoffs

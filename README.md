@@ -47,24 +47,52 @@ pip install -r requirements.txt
 Paste a sample of your app's CLI or Streamlit output here so a reader can see what a generated plan looks like:
 
 ```
-=== All pets ===
-Daily Plan for 2026-06-25  |  Owner: Alice
+=== All pets | sorted by TIME ===
+Daily Plan for 2026-06-25  |  Owner: Alice  |  Pet: All pets  |  Status: all
   Scheduled (4):
-    [Max]    WALK         - Morning walk                   (07:00 - 07:45) [priority: 3]
-    [Coco]   FEEDING      - Morning feeding                (08:00 - 08:10) [priority: 3]
-    [Max]    FEEDING      - Lunch feeding                  (12:00 - 12:15) [priority: 2]
-    [Max]    MEDS         - Evening heartworm pill         (18:00 - 18:05) [priority: 5]
+    [Max]    WALK         - Morning walk                   (07:00 - 07:45) [priority: 3] [pending]
+    [Coco]   FEEDING      - Morning feeding                (08:00 - 08:10) [priority: 3] [pending]
+    [Max]    FEEDING      - Lunch feeding                  (12:00 - 12:15) [priority: 2] [pending]
+    [Max]    MEDS         - Evening heartworm pill         (18:00 - 18:05) [priority: 5] [pending]
+  Done (0):
+  Canceled (0):
   Skipped (1):
-    [Coco]   MEDS         - Evening flea treatment         (06:30 - 06:35) [priority: 4]
+    [Coco]   MEDS         - Evening flea treatment         (06:30 - 06:35) [priority: 4] [pending]
   Reasoning:
-    - Skipped MEDS 'Evening flea treatment' (task_id=t6): meds not allowed before 08:00:00 (NO_MEDS_BEFORE preference)
+    - Skipped [Coco] MEDS: meds not allowed before 08:00:00 (NO_MEDS_BEFORE preference)
 
-=== Max only ===
-Daily Plan for 2026-06-25  |  Owner: Alice
+=== All pets | sorted by PRIORITY ===
+Daily Plan for 2026-06-25  |  Owner: Alice  |  Pet: All pets  |  Status: all
+  Scheduled (4):
+    [Max]    MEDS         - Evening heartworm pill         (18:00 - 18:05) [priority: 5] [pending]
+    [Max]    WALK         - Morning walk                   (07:00 - 07:45) [priority: 3] [pending]
+    [Coco]   FEEDING      - Morning feeding                (08:00 - 08:10) [priority: 3] [pending]
+    [Max]    FEEDING      - Lunch feeding                  (12:00 - 12:15) [priority: 2] [pending]
+  Done (0):
+  Canceled (0):
+  Skipped (1):
+    [Coco]   MEDS         - Evening flea treatment         (06:30 - 06:35) [priority: 4] [pending]
+  Reasoning:
+    - Skipped [Coco] MEDS: meds not allowed before 08:00:00 (NO_MEDS_BEFORE preference)
+
+=== Max only | sorted by TIME ===
+Daily Plan for 2026-06-25  |  Owner: Alice  |  Pet: Max  |  Status: all
   Scheduled (3):
-    [Max]    WALK         - Morning walk                   (07:00 - 07:45) [priority: 3]
-    [Max]    FEEDING      - Lunch feeding                  (12:00 - 12:15) [priority: 2]
-    [Max]    MEDS         - Evening heartworm pill         (18:00 - 18:05) [priority: 5]
+    [Max]    WALK         - Morning walk                   (07:00 - 07:45) [priority: 3] [pending]
+    [Max]    FEEDING      - Lunch feeding                  (12:00 - 12:15) [priority: 2] [pending]
+    [Max]    MEDS         - Evening heartworm pill         (18:00 - 18:05) [priority: 5] [pending]
+  Done (0):
+  Canceled (0):
+  Skipped (0):
+
+=== Max only | sorted by PRIORITY ===
+Daily Plan for 2026-06-25  |  Owner: Alice  |  Pet: Max  |  Status: all
+  Scheduled (3):
+    [Max]    MEDS         - Evening heartworm pill         (18:00 - 18:05) [priority: 5] [pending]
+    [Max]    WALK         - Morning walk                   (07:00 - 07:45) [priority: 3] [pending]
+    [Max]    FEEDING      - Lunch feeding                  (12:00 - 12:15) [priority: 2] [pending]
+  Done (0):
+  Canceled (0):
   Skipped (0):
 ```
 
@@ -86,14 +114,12 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
-
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Task sorting | `Scheduler.sort_by_priority()`, `DailyPlan.summary(sort_by_priority=bool)` | Tasks sorted by priority (highest to lowest); can also sort by start time within each status section |
+| Filtering | `Task.is_due_on()`, `Pet.get_pending_tasks()`, `Pet.get_tasks_due_on()`, `DailyPlan.summary(status_filter=list)` | Filters by recurrence date, task status, and pet; skips tasks if constraints violated (time conflicts, max walk hours, medication time restrictions) |
+| Conflict handling | `Task.overlaps_with()`, `Scheduler.detect_conflicts()`, `Scheduler.generate_daily_plan()` | Detects overlapping time windows; skips conflicting tasks; prevents double-booking pets in same time slot |
+| Recurring tasks | `RecurrenceFreq` enum (ONCE, DAILY, WEEKLY), `Task.is_due_on()`, `recurrence_days` field | Supports one-time tasks (scheduled_date), daily recurring, and weekly recurring with day-of-week selection |
 
 ## 📸 Demo Walkthrough
 
