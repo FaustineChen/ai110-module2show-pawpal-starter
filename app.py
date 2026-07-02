@@ -7,6 +7,7 @@ from pawpal_system import (
     Owner,
     Pet,
     PreferenceKey,
+    Priority,
     RecurrenceFreq,
     Scheduler,
     Task,
@@ -150,7 +151,9 @@ else:
 
     col5, col6 = st.columns(2)
     with col5:
-        priority = st.selectbox("Priority", [1, 2, 3, 4, 5], index=2)
+        priority = st.selectbox(
+            "Priority", list(Priority), index=1, format_func=lambda p: p.name.title()
+        )
     with col6:
         recurrence_freq = st.selectbox("Recurrence", [f.value for f in RecurrenceFreq])
 
@@ -199,7 +202,7 @@ else:
                 cols[1].write(t.description)
                 cols[2].write(t.start_time.strftime("%H:%M"))
                 cols[3].write(t.end_time.strftime("%H:%M"))
-                cols[4].write(t.priority)
+                cols[4].write(t.priority.name.title())
                 cols[5].write(t.recurrence_freq.value)
                 new_status = cols[6].selectbox(
                     "status",

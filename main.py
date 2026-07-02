@@ -36,7 +36,7 @@ pet1.add_task(Task(
     status=TaskStatus.PENDING,
     start_time=time(18, 0),
     end_time=time(18, 5),
-    priority=5,
+    priority=Priority.HIGH,
     recurrence_freq=RecurrenceFreq.DAILY,
 ))
 
@@ -48,7 +48,7 @@ pet1.add_task(Task(
     status=TaskStatus.PENDING,
     start_time=time(7, 0),
     end_time=time(7, 45),
-    priority=3,
+    priority=Priority.MEDIUM,
     recurrence_freq=RecurrenceFreq.DAILY,
 ))
 
@@ -60,7 +60,7 @@ pet1.add_task(Task(
     status=TaskStatus.PENDING,
     start_time=time(12, 0),
     end_time=time(12, 15),
-    priority=2,
+    priority=Priority.LOW,
     recurrence_freq=RecurrenceFreq.DAILY,
 ))
 
@@ -73,7 +73,7 @@ pet2.add_task(Task(
     status=TaskStatus.PENDING,
     start_time=time(14, 0),
     end_time=time(14, 20),
-    priority=1,
+    priority=Priority.LOW,
     recurrence_freq=RecurrenceFreq.WEEKLY,
     recurrence_days=[3],  # Wednesday
 ))
@@ -86,7 +86,7 @@ pet2.add_task(Task(
     status=TaskStatus.PENDING,
     start_time=time(6, 30),
     end_time=time(6, 35),
-    priority=4,
+    priority=Priority.HIGH,
     recurrence_freq=RecurrenceFreq.DAILY,
 ))
 
@@ -98,7 +98,7 @@ pet2.add_task(Task(
     status=TaskStatus.PENDING,
     start_time=time(8, 0),
     end_time=time(8, 10),
-    priority=3,
+    priority=Priority.MEDIUM,
     recurrence_freq=RecurrenceFreq.DAILY,
 ))
 

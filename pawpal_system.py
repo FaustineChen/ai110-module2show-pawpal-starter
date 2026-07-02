@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import re
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, IntEnum
 from typing import Optional
 
 
@@ -38,6 +38,12 @@ class PreferenceKey(Enum):
     MAX_WALK_HOURS_PER_DAY = "max_walk_hours_per_day"
 
 
+class Priority(IntEnum):
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+
+
 # ---------------------------------------------------------------------------
 # Data classes
 # ---------------------------------------------------------------------------
@@ -51,7 +57,7 @@ class Task:
     status: TaskStatus
     start_time: datetime.time
     end_time: datetime.time
-    priority: int
+    priority: Priority
     recurrence_freq: RecurrenceFreq
     recurrence_days: list[int] = field(default_factory=list)
     scheduled_date: Optional[datetime.date] = None
@@ -264,7 +270,7 @@ class DailyPlan:
             type_col   = f"{task.type.name:<12}"
             desc_col   = f"{task.description:<30}"
             time_col   = f"({task.start_time.strftime('%H:%M')} - {task.end_time.strftime('%H:%M')})"
-            prio_col   = f"[priority: {task.priority}]"
+            prio_col   = f"[priority: {task.priority.name}]"
             status_col = f"[{task.status.value}]"
             return f"    {pet_col:<8} {type_col} - {desc_col} {time_col:<15} {prio_col} {status_col}"
 

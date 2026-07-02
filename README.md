@@ -102,6 +102,7 @@ Daily Plan for 2026-06-25  |  Owner: Alice  |  Pet: Max  |  Status: all
 # Run the full test suite:
 pytest
 
+
 # Run with coverage:
 pytest --cov
 ```
@@ -109,7 +110,27 @@ pytest --cov
 Sample test output:
 
 ```
-# Paste your pytest output here
+=============================================================================== test session starts ================================================================================
+platform win32 -- Python 3.13.6, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\Faustine Chen\FC\Master\CodePath\AI110\ai110-module2show-pawpal-starter
+plugins: anyio-4.14.0
+collected 32 items                                                                                                                                                                  
+
+test_pawpal.py ................................                                                                                                                               [100%]
+
+================================================================================ 32 passed in 0.16s ================================================================================
+
+
+================================================================================== tests coverage ==================================================================================
+_________________________________________________________________ coverage: platform win32, python 3.13.6-final-0 __________________________________________________________________
+
+Name               Stmts   Miss  Cover
+--------------------------------------
+pawpal_system.py     207     10    95%
+test_pawpal.py       216      0   100%
+--------------------------------------
+TOTAL                423     10    98%
+================================================================================ 32 passed in 0.32s ================================================================================
 ```
 
 ## 📐 Smarter Scheduling
@@ -125,10 +146,11 @@ Sample test output:
 
 Describe your app in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Enter owner name. The user types their name into the input field, creating an `Owner` instance stored in `st.session_state`.
+2. Set preferences. The user checks/unchecks preference options (e.g., `NO_MEDS_BEFORE`, `MAX_WALK_HOURS_PER_DAY`). These can be toggled at any time, but changes only take effect after clicking Generate Plan again.
+3. Add a pet. In the Pet section, the user enters a pet's name and species and submits the form. The new pet appears immediately in the pet list below.
+4. Add a task. Once at least one pet exists, the user can add a task in the Task section by selecting the target pet, then specifying: task type, description, start time, end time, priority, and recurrence (if `once`, a specific date is selected; if `weekly`, the day(s) of the week are selected). 5. 5. Submitted tasks appear in the task list below.
+5. Update task status. In the task list, the user can change a task's status (e.g., mark as done or canceled). Like preference changes, this update is only reflected in the schedule after clicking Generate Plan again.
+6. Build and filter the schedule. In the Build Schedule section, the user clicks Generate Plan to run the scheduler, producing a `DailyPlan` based on the current owner, pets, tasks, and preferences. Once generated, the user can filter the displayed results by pet (all pets or a single pet), date, and task status — these filters apply instantly without needing to regenerate the plan. Within each status group, tasks are displayed by start time by default; the user can toggle Sort by Priority to reorder them by priority instead.
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->

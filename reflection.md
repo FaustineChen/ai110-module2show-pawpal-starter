@@ -177,6 +177,7 @@ Yes, the design changed in several ways during implementation:
     - Hard constraints (time conflicts) are resolved first conceptually, since there's no flexibility to ignore them.
     - Owner preferences rank above plain priority ordering, because they represent an explicit rule the owner deliberately set (e.g., "don't wake me up to give meds at 6am"), as opposed to priority, which is just a relative ranking used when nothing else dictates order.
     - Priority is the lowest-weighted constraint, used only to break ties or decide ordering once hard constraints and preferences have already been satisfied.
+    - When two tasks share the same priority and overlap in time, the scheduler relies on Python's stable sort to break the tie — the task added earlier by the owner is retained, and the later-added conflicting task is moved to `skipped_tasks` with a "time conflict" entry in `reasoning_log`. This is an implicit first-come-first-served behavior rather than an explicit tie-breaking rule.
 
 **b. Tradeoffs**
 
@@ -191,13 +192,25 @@ Yes, the design changed in several ways during implementation:
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
+- How did you use AI tools during this project?
+    - AI was used primarily during implementation and testing.
+    - The overall system design (class structure, responsibilities, constraints) was largely decided upfront through discussion rather than delegated to AI — the role of AI there was more to pressure-test data structure choices (e.g., ID-based references vs. direct object references, Enum vs. dict for preferences) than to generate the design outright.
+    - During coding, AI helped with implementation details and translating design decisions into working Python.
+    - During testing, AI helped generate pytest cases as a starting point.
+
 - What kinds of prompts or questions were most helpful?
+    - The most useful prompts were specific and grounded in existing code — for example, asking AI to explain what a particular block of code was doing before deciding whether to accept a suggestion, or asking "what are the tradeoffs between X and Y for this specific case" rather than open-ended questions.
+    - Asking AI to justify its suggestions (rather than just produce code) made it easier to evaluate whether the output actually fit the system's design.
 
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
+    - First, AI-generated pytest cases included more edge cases than were practical for this project's scope, so lower-value tests were pruned to keep the test suite focused.
+    - Second, AI initially implemented pet-level filtering in `generate_daily_plan` as a display-level filter applied after generating a full combined plan — meaning if Pet A and Pet B had tasks at the same time slot with different priorities, the scheduler would correctly keep only one in the combined plan, but filtering to Pet A or Pet B individually would still show that task for both, which is incorrect. This was caught by reasoning through the expected behavior manually and corrected so that filtering scopes the input to the scheduler, not just the output.
+
 - How did you evaluate or verify what the AI suggested?
+    - AI suggestions were not accepted without first reading through the logic and confirming it made sense.
+    - For code that wasn't immediately clear, the approach was to ask AI to explain what the code was doing before deciding whether to use it.
 
 ---
 
@@ -206,12 +219,16 @@ Yes, the design changed in several ways during implementation:
 **a. What you tested**
 
 - What behaviors did you test?
+    - I tested the scheduler’s core behaviors, including detecting time conflicts, respecting owner preferences, ordering tasks by priority, handling recurring tasks, and correctly sorting completed, canceled, and pending tasks into the daily plan.
 - Why were these tests important?
+    - They verify that the scheduler makes sensible decisions, avoids overlapping tasks, follows user rules, and handles common real-world cases correctly.
 
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
+    - 4, for the main scenarios covered by the tests.
 - What edge cases would you test next if you had more time?
+    - more edge cases such as multiple pets with overlapping tasks, unusual preference combinations, very short or very long tasks, and boundary cases around recurring schedules and dates.
 
 ---
 
